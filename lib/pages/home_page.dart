@@ -11,11 +11,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List _image_urls = [
-    'https://img1.17img.cn/otherfile/images/201911/ykt/0f812ae8-5b09-4784-94b6-d042cfef3d55.jpg',
-    'https://img1.17img.cn/otherfile/images/201909/ykt/dd54fd65-bfc5-4a49-909a-6f75f87440c7.jpg',
-    'https://img1.17img.cn/otherfile/images/201911/ykt/f5530e71-c293-44dd-91d2-ac8b6d19517a.jpg',
-    'https://img1.17img.cn/otherfile/images/201910/ykt/d7895f47-5a10-41af-9db3-1d6928346480.jpg',
-    'https://img1.17img.cn/otherfile/images/201910/ykt/26664a53-56e7-441b-8d08-2f084a2d1bda.jpg'
+    'https://img1.17img.cn/ui/bimg/SH100000/APP/112548020191028.png',
+    'https://img1.17img.cn/ui/simg/instrument/SH100000/20190527/20190527.gif',
+    'https://img1.17img.cn/ui/bimg/1125_480yzlx.jpg',
+    'https://img1.17img.cn/ui/bimg/SH100000/APP/banner/112548020191114.jpg',
+    'https://img1.17img.cn/ui/simg/instrument/child/app/kc1125480.jpg'
   ];
   double _appbarAlpha = 0;
 
@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
                   child: ListView(
                     children: <Widget>[
                       Container(
-                        height: 160,
+                        height: 180,
                         child: Swiper(
                           itemCount: _image_urls.length,
                           autoplay: true,
@@ -49,7 +49,9 @@ class _HomePageState extends State<HomePage> {
                               fit: BoxFit.cover,
                             );
                           },
-                          pagination: SwiperPagination(),
+                          pagination: SwiperPagination(
+                              builder: DotSwiperPaginationBuilder(
+                                  size: 6, activeSize: 8)),
                         ),
                       ),
                       Container(
