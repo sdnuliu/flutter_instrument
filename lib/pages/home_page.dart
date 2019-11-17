@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_instrument/dao/home_dao.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
 const APPBAR_SCROLL_OFFSET = 100;
@@ -18,6 +21,12 @@ class _HomePageState extends State<HomePage> {
     'https://img1.17img.cn/ui/simg/instrument/child/app/kc1125480.jpg'
   ];
   double _appbarAlpha = 0;
+  String result='';
+  @override
+  void initState() {
+    _loadData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,9 +64,8 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       Container(
-                        height: 800,
                         child: ListTile(
-                          title: Text('内容待开发，待完善'),
+                          title: Text(result),
                         ),
                       )
                     ],
@@ -90,5 +98,17 @@ class _HomePageState extends State<HomePage> {
    setState(() {
      _appbarAlpha = alpha;
    });
+  }
+
+  void _loadData() async{
+    HomeDao.fetch().then((res){
+      setState(() {
+        result=json.encode(res);
+      });
+    }).catchError((e){
+      setState(() {
+        result=e.toString();
+      });
+    });
   }
 }

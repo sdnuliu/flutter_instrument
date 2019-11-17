@@ -1,7 +1,12 @@
+
+
 import 'package:flutter/material.dart';
-import 'package:flutter_instrument/bean/test_http.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:flutter_instrument/test/test_expansiontile.dart';
+import 'package:flutter_instrument/test/test_gridview.dart';
+import 'package:flutter_instrument/test/test_http.dart';
+import 'package:flutter_instrument/test/test_listview.dart';
+import 'package:flutter_instrument/test/test_local_save.dart';
+import 'package:flutter_instrument/test/test_refresh_loadmore.dart';
 
 ///我的页
 class MinePage extends StatefulWidget {
@@ -10,53 +15,39 @@ class MinePage extends StatefulWidget {
 }
 
 class _MinePageState extends State<MinePage> {
-  String _result = '';
-
+ Map<String,Widget>mDatas={'HttpTestDemo':TestHtpPage(),'LocalSaveTestDemo':TestLocalSavePage(),
+   'ListViewDemo':TestListViewPage(),'ExpansionTileDemo':TestExpansionTilePage(),
+   'GridViewDemo':TestGridViewPage(),'RefreshAndLoadMoreDemo':TestRefreshLoadMorePage()};
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(future:fetchPost(),builder: (BuildContext context, AsyncSnapshot<CommonModel> snapshot){
-        switch(snapshot.connectionState){
-          case ConnectionState.none:
-            return Text('ConnectionState.none');
-          case ConnectionState.active:
-            return Text('ConnectionState.active');
-          case ConnectionState.done:
-            if(snapshot.hasError){
-              return Text(snapshot.error);
-            }
-              return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () {
-                          fetchPost().then((CommonModel value) {
-                            setState(() {
-                              _result =
-                              '请求结果：\nhideAppBar：${value.hideAppBar}\nicon：${value.icon}';
-                            });
-                          });
-                        },
-                        child: Text('点我发起一次请求'),
-                      ),
-                      Text(_result)
-                    ],
-                  ));
-
-          case ConnectionState.waiting:
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-        }
-      }),
-    );
+        body: Center(
+      child: ListView(
+        children: _getItems(),
+      ),
+    ));
   }
-  ///发起一次请求
-  Future<CommonModel> fetchPost() async {
-    final response = await http
-        .get('http://www.devio.org/io/flutter_app/json/test_common_model.json');
-    final result = json.decode(response.body);
-    return CommonModel.fromJson(result);
+
+  List<Widget> _getItems() {
+    List<Widget> widgets=[];
+    mDatas.keys.forEach((item){
+      widgets.add(_buildWidget(item,mDatas[item]));
+    });
+    return widgets;
+  }
+
+  Widget _buildWidget(String item, Widget mData) {
+    return
+      RaisedButton(
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) {
+              //指定跳转的页面
+              return mData;
+            },
+          ));
+        },
+        child: Text(item),
+      );
   }
 }
