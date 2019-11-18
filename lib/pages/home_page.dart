@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_instrument/dao/home_dao.dart';
+import 'package:flutter_instrument/model/home_model.dart';
+import 'package:flutter_instrument/widget/grid_nav.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
 const APPBAR_SCROLL_OFFSET = 100;
@@ -21,7 +23,7 @@ class _HomePageState extends State<HomePage> {
     'https://img1.17img.cn/ui/simg/instrument/child/app/kc1125480.jpg'
   ];
   double _appbarAlpha = 0;
-  String result='';
+  HomeModel _homeModel;
   @override
   void initState() {
     _loadData();
@@ -31,6 +33,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xfff2f2f2),
       body: Stack(
         children: <Widget>[
           MediaQuery.removePadding(
@@ -63,11 +66,10 @@ class _HomePageState extends State<HomePage> {
                                   size: 6, activeSize: 8)),
                         ),
                       ),
-                      Container(
-                        child: ListTile(
-                          title: Text(result),
-                        ),
-                      )
+                      Padding(padding: EdgeInsets.all(7),
+                        child: GridNavWidget(
+                          localNavList: _homeModel?.localNavList,
+                        ),)
                     ],
                   ))),
           Opacity(
@@ -103,12 +105,10 @@ class _HomePageState extends State<HomePage> {
   void _loadData() async{
     HomeDao.fetch().then((res){
       setState(() {
-        result=json.encode(res);
+        _homeModel = res;
       });
     }).catchError((e){
-      setState(() {
-        result=e.toString();
-      });
+      print(e);
     });
   }
 }
