@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_instrument/dao/home_dao.dart';
 import 'package:flutter_instrument/model/home_model.dart';
 import 'package:flutter_instrument/widget/grid_nav.dart';
+import 'package:flutter_instrument/widget/tralvel_nav.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
 const APPBAR_SCROLL_OFFSET = 100;
@@ -24,6 +25,7 @@ class _HomePageState extends State<HomePage> {
   ];
   double _appbarAlpha = 0;
   HomeModel _homeModel;
+
   @override
   void initState() {
     _loadData();
@@ -66,10 +68,18 @@ class _HomePageState extends State<HomePage> {
                                   size: 6, activeSize: 8)),
                         ),
                       ),
-                      Padding(padding: EdgeInsets.all(7),
+                      Padding(
+                        padding: EdgeInsets.all(7),
                         child: GridNavWidget(
                           localNavList: _homeModel?.localNavList,
-                        ),)
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(7,4, 7, 4),
+                        child: TravelNavWidget(
+                          gridNav: _homeModel?.gridNav,
+                        ),
+                      )
                     ],
                   ))),
           Opacity(
@@ -97,17 +107,17 @@ class _HomePageState extends State<HomePage> {
     } else if (alpha > 1) {
       alpha = 1;
     }
-   setState(() {
-     _appbarAlpha = alpha;
-   });
+    setState(() {
+      _appbarAlpha = alpha;
+    });
   }
 
-  void _loadData() async{
-    HomeDao.fetch().then((res){
+  void _loadData() async {
+    HomeDao.fetch().then((res) {
       setState(() {
         _homeModel = res;
       });
-    }).catchError((e){
+    }).catchError((e) {
       print(e);
     });
   }

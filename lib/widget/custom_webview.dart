@@ -123,10 +123,11 @@ class _CustomWebviewState extends State<CustomWebview> {
       );
     }
     return Container(
+      color: backgroundColor,
       child: FractionallySizedBox(
         widthFactor: 1,
         child: Padding(
-          padding: EdgeInsets.only(top: 30),
+          padding: EdgeInsets.fromLTRB(0, 40, 0, 10),
           child: Stack(
             children: <Widget>[
               GestureDetector(
