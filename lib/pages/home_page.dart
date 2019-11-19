@@ -1,9 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_instrument/dao/home_dao.dart';
 import 'package:flutter_instrument/model/home_model.dart';
 import 'package:flutter_instrument/widget/grid_nav.dart';
+import 'package:flutter_instrument/widget/load_container.dart';
+import 'package:flutter_instrument/widget/salex_box_botttom.dart';
+import 'package:flutter_instrument/widget/sub_nav.dart';
 import 'package:flutter_instrument/widget/tralvel_nav.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
@@ -25,6 +26,7 @@ class _HomePageState extends State<HomePage> {
   ];
   double _appbarAlpha = 0;
   HomeModel _homeModel;
+  bool isLoading=true;
 
   @override
   void initState() {
@@ -36,66 +38,84 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xfff2f2f2),
-      body: Stack(
-        children: <Widget>[
-          MediaQuery.removePadding(
-              context: context,
-              removeTop: true,
-              child: NotificationListener(
-                  onNotification: (scrollNotification) {
-                    //只监听listview的滚动
-                    if (scrollNotification is ScrollUpdateNotification &&
-                        scrollNotification.depth == 0) {
-                      _onScroll(scrollNotification.metrics.pixels);
-                    }
-                    return false;
-                  },
-                  child: ListView(
-                    children: <Widget>[
-                      Container(
-                        height: 180,
-                        child: Swiper(
-                          itemCount: _image_urls.length,
-                          autoplay: true,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Image.network(
-                              _image_urls[index],
-                              fit: BoxFit.cover,
-                            );
-                          },
-                          pagination: SwiperPagination(
-                              builder: DotSwiperPaginationBuilder(
-                                  size: 6, activeSize: 8)),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(7),
-                        child: GridNavWidget(
-                          localNavList: _homeModel?.localNavList,
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(7,4, 7, 4),
-                        child: TravelNavWidget(
-                          gridNav: _homeModel?.gridNav,
-                        ),
-                      )
-                    ],
-                  ))),
-          Opacity(
-            opacity: _appbarAlpha,
-            child: Container(
-              height: 70,
-              decoration: BoxDecoration(color: Colors.white),
-              child: Center(
-                child: Padding(
-                  padding: EdgeInsets.only(top: 20),
-                  child: Text('首页'),
+      body: LoadingContainer(
+        isLoading: isLoading,
+        child: Stack(
+          children: <Widget>[
+            MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child: RefreshIndicator(
+                  onRefresh: _loadData,
+                  child: NotificationListener(
+                      onNotification: (scrollNotification) {
+                        //只监听listview的滚动
+                        if (scrollNotification is ScrollUpdateNotification &&
+                            scrollNotification.depth == 0) {
+                          _onScroll(scrollNotification.metrics.pixels);
+                        }
+                        return false;
+                      },
+                      child: ListView(
+                        children: <Widget>[
+                          Container(
+                            height: 180,
+                            child: Swiper(
+                              itemCount: _image_urls.length,
+                              autoplay: true,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Image.network(
+                                  _image_urls[index],
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                              pagination: SwiperPagination(
+                                  builder: DotSwiperPaginationBuilder(
+                                      size: 6, activeSize: 8)),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(7),
+                            child: GridNavWidget(
+                              localNavList: _homeModel?.localNavList,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                            child: TravelNavWidget(
+                              gridNav: _homeModel?.gridNav,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                            child: SubNavWidget(
+                              subNavList: _homeModel?.subNavList,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(7, 4, 7, 4),
+                            child: SalesBoxWidget(
+                              salesBox: _homeModel?.salesBox,
+                            ),
+                          ),
+                        ],
+                      )),
+                )),
+            Opacity(
+              opacity: _appbarAlpha,
+              child: Container(
+                height: 70,
+                decoration: BoxDecoration(color: Colors.white),
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 25),
+                    child: Text('首页', style: TextStyle(fontSize: 16),),
+                  ),
                 ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -112,13 +132,15 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _loadData() async {
+  Future<Null> _loadData() async {
     HomeDao.fetch().then((res) {
       setState(() {
         _homeModel = res;
+        isLoading=false;
       });
     }).catchError((e) {
       print(e);
     });
+    return null;
   }
 }
