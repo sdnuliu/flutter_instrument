@@ -4,6 +4,7 @@ import 'package:flutter_instrument/model/home_model.dart';
 import 'package:flutter_instrument/widget/grid_nav.dart';
 import 'package:flutter_instrument/widget/load_container.dart';
 import 'package:flutter_instrument/widget/salex_box_botttom.dart';
+import 'package:flutter_instrument/widget/search_bar_widget.dart';
 import 'package:flutter_instrument/widget/sub_nav.dart';
 import 'package:flutter_instrument/widget/tralvel_nav.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -101,18 +102,41 @@ class _HomePageState extends State<HomePage> {
                         ],
                       )),
                 )),
-            Opacity(
-              opacity: _appbarAlpha,
-              child: Container(
-                height: 70,
-                decoration: BoxDecoration(color: Colors.white),
-                child: Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 25),
-                    child: Text('首页', style: TextStyle(fontSize: 16),),
+            Column(
+              children: <Widget>[
+                Container(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          colors: [Color(0x66000000), Colors.transparent],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter)
+                  ),
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
+                    height: 80,
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(
+                          (_appbarAlpha * 255).toInt(), 255, 255, 255),
+                    ),
+                    child: SearchBar(
+                      searchBarType: _appbarAlpha > 0.2 ? SearchBarType
+                          .homeLight : SearchBarType.home,
+                      inputBoxClick: _jumpToSearch,
+                      speakClick: _jumpToSpeak,
+                      defaultText: '网红打卡地 景点 美食 酒店',
+                      leftButtonClick: () {},
+                    ),
                   ),
                 ),
-              ),
+                Container(
+                  height: _appbarAlpha > 0.2 ? 0.5 : 0,
+                  decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(color: Colors.black12, blurRadius: 0.5)
+                      ]
+                  ),
+                )
+              ],
             )
           ],
         ),
@@ -142,5 +166,13 @@ class _HomePageState extends State<HomePage> {
       print(e);
     });
     return null;
+  }
+
+  void _jumpToSearch() {
+
+  }
+
+  void _jumpToSpeak() {
+
   }
 }
