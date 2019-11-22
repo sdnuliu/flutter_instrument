@@ -1,6 +1,7 @@
 class SearchModel {
   Head head;
   List<Data> data;
+  String keyword;
 
   SearchModel({this.head, this.data});
 
