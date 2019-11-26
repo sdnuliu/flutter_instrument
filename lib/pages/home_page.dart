@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_instrument/dao/home_dao.dart';
 import 'package:flutter_instrument/model/home_model.dart';
+import 'package:flutter_instrument/pages/search_page.dart';
 import 'package:flutter_instrument/widget/grid_nav.dart';
 import 'package:flutter_instrument/widget/load_container.dart';
 import 'package:flutter_instrument/widget/salex_box_botttom.dart';
@@ -169,7 +170,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _jumpToSearch() {
-
+    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SearchPage()));
   }
 
   void _jumpToSpeak() {

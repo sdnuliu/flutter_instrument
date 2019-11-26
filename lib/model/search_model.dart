@@ -29,7 +29,7 @@ class SearchModel {
 
 class Head {
   String auth;
-  int errcode;
+  String errcode;
 
   Head({this.auth, this.errcode});
 

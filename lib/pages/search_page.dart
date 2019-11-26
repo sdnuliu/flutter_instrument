@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_instrument/dao/search_dao.dart';
 import 'package:flutter_instrument/model/search_model.dart';
+import 'package:flutter_instrument/widget/custom_webview.dart';
 import 'package:flutter_instrument/widget/search_bar_widget.dart';
 
 ///搜索页
 class SearchPage extends StatefulWidget {
+  bool hideLeft = true;
+
   @override
   _SearchPageState createState() => _SearchPageState();
+
+  SearchPage({Key key, this.hideLeft}) :super(key: key);
 }
 
 class _SearchPageState extends State<SearchPage> {
@@ -14,18 +19,20 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        _appBar(),
-        MediaQuery.removePadding(
-            context: context,
-            removeTop: true,
-            child: Expanded(child: ListView.builder(
-                itemCount: _searchModel?.data?.length ?? 0,
-                itemBuilder: (BuildContext context, int position) {
-                  return _item(position);
-                }), flex: 1,))
-      ],
+    return Scaffold(
+      body: Column(
+        children: <Widget>[
+          _appBar(),
+          MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: Expanded(child: ListView.builder(
+                  itemCount: _searchModel?.data?.length ?? 0,
+                  itemBuilder: (BuildContext context, int position) {
+                    return _item(position);
+                  }), flex: 1,))
+        ],
+      ),
     );
   }
 
@@ -60,7 +67,7 @@ class _SearchPageState extends State<SearchPage> {
             height: 70,
             decoration: BoxDecoration(color: Colors.white),
             child: SearchBar(
-              hideLeft: true,
+              hideLeft: widget.hideLeft,
               hint: '网红打卡地 景点 美食 酒店',
               leftButtonClick: () {
                 Navigator.of(context).pop();
@@ -76,6 +83,42 @@ class _SearchPageState extends State<SearchPage> {
   Widget _item(int position) {
     if (_searchModel == null || _searchModel.data == null) return null;
     Data data = _searchModel.data[position];
-    return Text(data.word);
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) =>
+            CustomWebview(
+              url: data.url,
+              title: '详情',
+            )));
+      },
+      child: Container(
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+            border: Border(
+                bottom: BorderSide(
+                    width: 0.3,
+                    color: Colors.grey
+                )
+            )
+        ),
+        child: Row(
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                Container(
+                  width: 300,
+                  child: Text('${data.word}-${data.districtname ?? ''}-${data
+                      .zonename ?? ''}'),
+                ),
+                Container(
+                  width: 300,
+                  child: Text('${data.price ?? ''}-${data.type ?? ''}'),
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
